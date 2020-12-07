@@ -25,6 +25,8 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Build;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -190,10 +192,6 @@ public class MDRootLayout extends ViewGroup {
     }
 
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
-        if (isInEditMode()) {
-            return;
-        }
-
         Resources r = context.getResources();
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.MDRootLayout, defStyleAttr, 0);
@@ -486,6 +484,8 @@ public class MDRootLayout extends ViewGroup {
                 case END:
                     buttonGravity = GravityEnum.START;
                     break;
+                default:
+                    break;
             }
         }
     }
@@ -578,7 +578,7 @@ public class MDRootLayout extends ViewGroup {
                 RecyclerView.OnScrollListener scrollListener =
                         new RecyclerView.OnScrollListener() {
                             @Override
-                            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                                 super.onScrolled(recyclerView, dx, dy);
                                 boolean hasButtons = false;
                                 for (MDButton button : buttons) {

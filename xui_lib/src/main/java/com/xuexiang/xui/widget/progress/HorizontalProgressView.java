@@ -149,7 +149,6 @@ public class HorizontalProgressView extends View {
      */
     private RectF mRect;
     private RectF mTrackRect;
-    private Paint mTextPaint;
     private Interpolator mInterpolator;
     private HorizontalProgressUpdateListener animatorUpdateListener;
 
@@ -189,6 +188,7 @@ public class HorizontalProgressView extends View {
 
         typedArray.recycle();
         moveProgress = mStartProgress;
+        setAnimateType(mAnimateType);
     }
 
     private void init() {
@@ -211,11 +211,8 @@ public class HorizontalProgressView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-
-        mShader = new LinearGradient(getPaddingLeft() - 50, (getHeight() - getPaddingTop()) - 50, getWidth() - getPaddingRight(), getHeight() / 2 + getPaddingTop() + mTrackWidth,
+        mShader = new LinearGradient(getPaddingLeft() - 50, (getHeight() - getPaddingTop()) - 50, getWidth() - getPaddingRight(), getHeight() / 2F + getPaddingTop() + mTrackWidth,
                 mStartColor, mEndColor, Shader.TileMode.CLAMP);
-
-
     }
 
     /**
@@ -240,7 +237,7 @@ public class HorizontalProgressView extends View {
     private void drawProgressText(Canvas canvas) {
 
         if (textVisibility) {
-            mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            Paint mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             mTextPaint.setStyle(Paint.Style.FILL);
             mTextPaint.setTextSize(mProgressTextSize);
             mTextPaint.setColor(mProgressTextColor);
@@ -248,14 +245,11 @@ public class HorizontalProgressView extends View {
 
             String progressText = ((int) moveProgress) + "%";
             if (isTextMoved) {
-                /**
-                 * draw the animated text of progress, should think about the offsets, or text will be covered.
-                 */
                 canvas.drawText(progressText,
                         (getWidth() - getPaddingLeft() - getPaddingRight() - DensityUtils.dp2px(getContext(), 28)) * (moveProgress / 100) + DensityUtils.dp2px(getContext(), 10),
-                        getHeight() / 2 - getPaddingTop() - mTextPaddingBottomOffset, mTextPaint);
+                        getHeight() / 2F - getPaddingTop() - mTextPaddingBottomOffset, mTextPaint);
             } else {
-                canvas.drawText(progressText, (getWidth() - getPaddingLeft()) / 2, getHeight() / 2 - getPaddingTop() - mTextPaddingBottomOffset, mTextPaint);
+                canvas.drawText(progressText, (getWidth() - getPaddingLeft()) / 2F, getHeight() / 2F - getPaddingTop() - mTextPaddingBottomOffset, mTextPaint);
             }
 
 
@@ -365,7 +359,7 @@ public class HorizontalProgressView extends View {
      */
     public void setStartColor(@ColorInt int startColor) {
         this.mStartColor = startColor;
-        mShader = new LinearGradient(getPaddingLeft() - 50, (getHeight() - getPaddingTop()) - 50, getWidth() - getPaddingRight(), getHeight() / 2 + getPaddingTop() + mTrackWidth,
+        mShader = new LinearGradient(getPaddingLeft() - 50, (getHeight() - getPaddingTop()) - 50, getWidth() - getPaddingRight(), getHeight() / 2F + getPaddingTop() + mTrackWidth,
                 mStartColor, mEndColor, Shader.TileMode.CLAMP);
         refreshTheView();
     }
@@ -377,7 +371,7 @@ public class HorizontalProgressView extends View {
      */
     public void setEndColor(@ColorInt int endColor) {
         this.mEndColor = endColor;
-        mShader = new LinearGradient(getPaddingLeft() - 50, (getHeight() - getPaddingTop()) - 50, getWidth() - getPaddingRight(), getHeight() / 2 + getPaddingTop() + mTrackWidth,
+        mShader = new LinearGradient(getPaddingLeft() - 50, (getHeight() - getPaddingTop()) - 50, getWidth() - getPaddingRight(), getHeight() / 2F + getPaddingTop() + mTrackWidth,
                 mStartColor, mEndColor, Shader.TileMode.CLAMP);
         refreshTheView();
     }
@@ -547,12 +541,12 @@ public class HorizontalProgressView extends View {
      * update the oval progress track
      */
     private void updateTheTrack() {
-        mRect = new RectF(getPaddingLeft() + mStartProgress * (getWidth() - getPaddingLeft() - getPaddingRight() + 60) / 100, getHeight() / 2 - getPaddingTop(),
+        mRect = new RectF(getPaddingLeft() + mStartProgress * (getWidth() - getPaddingLeft() - getPaddingRight() + 60) / 100, getHeight() / 2F - getPaddingTop(),
                 (getWidth() - getPaddingRight() - 20) * ((moveProgress) / 100),
-                getHeight() / 2 + getPaddingTop() + mTrackWidth);
-        mTrackRect = new RectF(getPaddingLeft(), getHeight() / 2 - getPaddingTop(),
+                getHeight() / 2F + getPaddingTop() + mTrackWidth);
+        mTrackRect = new RectF(getPaddingLeft(), getHeight() / 2F - getPaddingTop(),
                 (getWidth() - getPaddingRight() - 20),
-                getHeight() / 2 + getPaddingTop() + mTrackWidth);
+                getHeight() / 2F + getPaddingTop() + mTrackWidth);
     }
 
     /**
@@ -561,12 +555,14 @@ public class HorizontalProgressView extends View {
     public interface HorizontalProgressUpdateListener {
         /**
          * 进度条开始更新
+         *
          * @param view
          */
         void onHorizontalProgressStart(View view);
 
         /**
          * 进度条更新中
+         *
          * @param view
          * @param progress
          */
@@ -574,6 +570,7 @@ public class HorizontalProgressView extends View {
 
         /**
          * 进度条更新结束
+         *
          * @param view
          */
         void onHorizontalProgressFinished(View view);

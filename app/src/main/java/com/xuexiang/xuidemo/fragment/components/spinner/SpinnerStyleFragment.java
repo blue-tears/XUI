@@ -1,8 +1,11 @@
 package com.xuexiang.xuidemo.fragment.components.spinner;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.view.View;
 import android.widget.Spinner;
+
+import androidx.annotation.NonNull;
 
 import com.xuexiang.xaop.annotation.MemoryCache;
 import com.xuexiang.xpage.annotation.Page;
@@ -73,18 +76,8 @@ public class SpinnerStyleFragment extends BaseFragment {
         WidgetUtils.initSpinnerStyle(mSpinnerSystem, ResUtils.getStringArray(R.array.sort_mode_entry));
 
         mMaterialSpinner.setItems(ResUtils.getStringArray(R.array.sort_mode_entry));
-        mMaterialSpinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(MaterialSpinner spinner, int position, long id, Object item) {
-                SnackbarUtils.Long(spinner, "Clicked " + item).show();
-            }
-        });
-        mMaterialSpinner.setOnNothingSelectedListener(new MaterialSpinner.OnNothingSelectedListener() {
-            @Override
-            public void onNothingSelected(MaterialSpinner spinner) {
-                SnackbarUtils.Long(spinner, "Nothing selected").show();
-            }
-        });
+        mMaterialSpinner.setOnItemSelectedListener((spinner, position, id, item) -> SnackbarUtils.Long(spinner, "Clicked " + item).show());
+        mMaterialSpinner.setOnNothingSelectedListener(spinner -> SnackbarUtils.Long(spinner, "Nothing selected").show());
 //        mMaterialSpinner.setSelectedIndex(1);
         mMaterialSpinner.setSelectedItem("综合排序");
 
@@ -93,19 +86,19 @@ public class SpinnerStyleFragment extends BaseFragment {
         mMaterialSpinnerCustom.setItems(list);
         mMaterialSpinnerCustom.setSelectedItem(list.get(1));
 
-        mMaterialSpinnerOne.setOnNoMoreChoiceListener(new MaterialSpinner.OnNoMoreChoiceListener() {
-            @Override
-            public void OnNoMoreChoice(MaterialSpinner spinner) {
-                XToastUtils.toast("没有更多的选项！");
-            }
-        });
+        mMaterialSpinnerOne.setOnNoMoreChoiceListener(spinner -> XToastUtils.toast("没有更多的选项！"));
 
         mEditSpinner1.setAdapter(new EditSpinnerAdapter(getContext(), ResUtils.getStringArray(R.array.sort_mode_entry))
                 .setTextColor(ResUtils.getColor(R.color.color_green))
                 .setTextSize(mEditSpinner1.getEditText().getTextSize())
                 .setBackgroundSelector(R.drawable.selector_custom_spinner_bg)
         );
+    }
 
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        WidgetUtils.initSpinnerStyle(mSpinnerSystem);
     }
 
     @MemoryCache
@@ -120,27 +113,19 @@ public class SpinnerStyleFragment extends BaseFragment {
 
     @Override
     protected void initListeners() {
-        mBtEnable.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mWidgetEnable = !mWidgetEnable;
-                mSpinnerFitOffset.setEnabled(mWidgetEnable);
-                mSpinnerSystem.setEnabled(mWidgetEnable);
-                mMaterialSpinner.setEnabled(mWidgetEnable);
-                mEditSpinner.setEnabled(mWidgetEnable);
+        mBtEnable.setOnClickListener(v -> {
+            mWidgetEnable = !mWidgetEnable;
+            mSpinnerFitOffset.setEnabled(mWidgetEnable);
+            mSpinnerSystem.setEnabled(mWidgetEnable);
+            mMaterialSpinner.setEnabled(mWidgetEnable);
+            mEditSpinner.setEnabled(mWidgetEnable);
 
-            }
         });
     }
 
     @OnClick(R.id.btn_dialog)
     void onClick(View v) {
-        showEditSpinnerDialog(getContext(), "排序顺序", data, ResUtils.getStringArray(R.array.sort_mode_entry), new EditSpinnerDialog.OnEditListener() {
-            @Override
-            public void OnEdit(String value) {
-                data = value;
-            }
-        });
+        showEditSpinnerDialog(getContext(), "排序顺序", data, ResUtils.getStringArray(R.array.sort_mode_entry), value -> data = value);
     }
 
     /**

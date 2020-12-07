@@ -1,24 +1,29 @@
 package com.xuexiang.xuidemo.base;
 
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.umeng.analytics.MobclickAgent;
+import com.xuexiang.xaop.annotation.MemoryCache;
+import com.xuexiang.xaop.cache.XMemoryCache;
 import com.xuexiang.xpage.base.XPageActivity;
 import com.xuexiang.xpage.base.XPageFragment;
 import com.xuexiang.xpage.core.PageOption;
 import com.xuexiang.xpage.enums.CoreAnim;
 import com.xuexiang.xrouter.facade.service.SerializationService;
 import com.xuexiang.xrouter.launcher.XRouter;
+import com.xuexiang.xui.utils.DrawableUtils;
+import com.xuexiang.xui.utils.ThemeUtils;
 import com.xuexiang.xui.utils.WidgetUtils;
 import com.xuexiang.xui.widget.actionbar.TitleBar;
 import com.xuexiang.xui.widget.actionbar.TitleUtils;
 import com.xuexiang.xui.widget.progress.loading.IMessageLoader;
+import com.xuexiang.xuidemo.R;
 
 import java.io.Serializable;
 
@@ -31,7 +36,7 @@ public abstract class BaseFragment extends XPageFragment {
     /**
      * 消息加载框
      */
-    private IMessageLoader mIMessageLoader;
+    private IMessageLoader mMessageLoader;
 
     @Override
     protected void initPage() {
@@ -41,28 +46,29 @@ public abstract class BaseFragment extends XPageFragment {
     }
 
     protected TitleBar initTitle() {
-        return TitleUtils.addTitleBarDynamic((ViewGroup) getRootView(), getPageTitle(), new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popToBack();
-            }
-        });
+        return TitleUtils.addTitleBarDynamic((ViewGroup) getRootView(), getPageTitle(), v -> popToBack())
+                .setLeftImageDrawable(getNavigationBackDrawable(R.attr.xui_actionbar_ic_navigation_back));
+    }
+
+    @MemoryCache
+    private Drawable getNavigationBackDrawable(int navigationBackId) {
+        return DrawableUtils.getSupportRTLDrawable(ThemeUtils.resolveDrawable(getContext(), navigationBackId));
     }
 
     public IMessageLoader getMessageLoader() {
-        if (mIMessageLoader == null) {
-            mIMessageLoader = WidgetUtils.getMiniLoadingDialog(getContext());
+        if (mMessageLoader == null) {
+            mMessageLoader = WidgetUtils.getMiniLoadingDialog(getContext());
         }
-        return mIMessageLoader;
+        return mMessageLoader;
     }
 
     public IMessageLoader getMessageLoader(String message) {
-        if (mIMessageLoader == null) {
-            mIMessageLoader = WidgetUtils.getMiniLoadingDialog(getContext(), message);
+        if (mMessageLoader == null) {
+            mMessageLoader = WidgetUtils.getMiniLoadingDialog(getContext(), message);
         } else {
-            mIMessageLoader.updateMessage(message);
+            mMessageLoader.updateMessage(message);
         }
-        return mIMessageLoader;
+        return mMessageLoader;
     }
 
     @Override
@@ -70,19 +76,28 @@ public abstract class BaseFragment extends XPageFragment {
 
     }
 
+    /**
+     * 关闭当前fragment所在的activity,请谨慎使用！！！
+     */
+    protected void finishActivity() {
+        if (getActivity() != null && !getActivity().isFinishing()) {
+            getActivity().finish();
+        }
+    }
+
     @Override
     public void onDestroyView() {
-        if (mIMessageLoader != null) {
-            mIMessageLoader.dismiss();
-            mIMessageLoader = null;
+        if (mMessageLoader != null) {
+            mMessageLoader.dismiss();
         }
         super.onDestroyView();
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
         //屏幕旋转时刷新一下title
         super.onConfigurationChanged(newConfig);
+        XMemoryCache.getInstance().clear();
         ViewGroup root = (ViewGroup) getRootView();
         if (root.getChildAt(0) instanceof TitleBar) {
             root.removeViewAt(0);

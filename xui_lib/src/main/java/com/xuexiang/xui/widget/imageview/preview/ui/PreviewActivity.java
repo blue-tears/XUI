@@ -24,6 +24,7 @@ import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -31,6 +32,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.xuexiang.xui.R;
+import com.xuexiang.xui.utils.CollectionUtils;
 import com.xuexiang.xui.widget.imageview.preview.MediaLoader;
 import com.xuexiang.xui.widget.imageview.preview.PreviewBuilder;
 import com.xuexiang.xui.widget.imageview.preview.enitity.IPreviewInfo;
@@ -210,16 +212,17 @@ public class PreviewActivity extends FragmentActivity {
         mViewPager.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                mViewPager.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                BasePhotoFragment fragment = fragments.get(mCurrentIndex);
-                fragment.transformIn();
+                mViewPager.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                BasePhotoFragment fragment = CollectionUtils.getListItem(fragments, mCurrentIndex);
+                if (fragment != null) {
+                    fragment.transformIn();
+                }
             }
         });
-
     }
 
     private int getImgSize() {
-        return mImgUrls != null ? mImgUrls.size() : 0;
+        return CollectionUtils.getSize(mImgUrls);
     }
 
     /***退出预览的动画***/
@@ -300,6 +303,7 @@ public class PreviewActivity extends FragmentActivity {
             super(fm);
         }
 
+        @NonNull
         @Override
         public Fragment getItem(int position) {
             return fragments.get(position);
@@ -311,7 +315,7 @@ public class PreviewActivity extends FragmentActivity {
         }
 
         @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
+        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
             super.destroyItem(container, position, object);
         }
     }

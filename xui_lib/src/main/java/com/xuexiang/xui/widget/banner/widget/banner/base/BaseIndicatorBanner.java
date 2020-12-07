@@ -104,7 +104,7 @@ public abstract class BaseIndicatorBanner<E, T extends BaseIndicatorBanner<E, T>
             iv.setImageDrawable(i == mCurrentPosition ? mSelectDrawable : mUnSelectDrawable);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(mIndicatorWidth,
                     mIndicatorHeight);
-            lp.leftMargin = i == 0 ? 0 : mIndicatorGap;
+            lp.setMarginStart(i == 0 ? 0 : mIndicatorGap);
             mLlIndicators.addView(iv, lp);
             mIndicatorViews.add(iv);
         }
@@ -228,7 +228,7 @@ public abstract class BaseIndicatorBanner<E, T extends BaseIndicatorBanner<E, T>
         return (T) this;
     }
 
-    private class ReverseInterpolator implements Interpolator {
+    private static class ReverseInterpolator implements Interpolator {
         @Override
         public float getInterpolation(float value) {
             return Math.abs(1.0f - value);

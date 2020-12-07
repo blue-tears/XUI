@@ -148,7 +148,6 @@ public class MaterialDialog extends DialogBase
                 .getViewTreeObserver()
                 .addOnGlobalLayoutListener(
                         new ViewTreeObserver.OnGlobalLayoutListener() {
-                            @SuppressWarnings("ConstantConditions")
                             @Override
                             public void onGlobalLayout() {
                                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
@@ -230,7 +229,7 @@ public class MaterialDialog extends DialogBase
         } else {
             // Default adapter, choice mode
             if (listType == ListType.MULTI) {
-                final CheckBox cb = (CheckBox) view.findViewById(R.id.md_control);
+                final CheckBox cb = view.findViewById(R.id.md_control);
                 if (!cb.isEnabled()) {
                     return false;
                 }
@@ -267,7 +266,7 @@ public class MaterialDialog extends DialogBase
                     }
                 }
             } else if (listType == ListType.SINGLE) {
-                final RadioButton radio = (RadioButton) view.findViewById(R.id.md_control);
+                final RadioButton radio = view.findViewById(R.id.md_control);
                 if (!radio.isEnabled()) {
                     return false;
                 }
@@ -1270,8 +1269,8 @@ public class MaterialDialog extends DialogBase
             this.buttonsGravity =
                     ThemeUtils.resolveGravityEnum(context, R.attr.md_buttons_gravity, this.buttonsGravity);
 
-            final String mediumFont = ThemeUtils.resolveString(context, R.attr.md_medium_font);
-            final String regularFont = ThemeUtils.resolveString(context, R.attr.md_regular_font);
+            final String mediumFont = ThemeUtils.resolveString(context, R.attr.md_medium_font, XUI.getDefaultFontAssetPath());
+            final String regularFont = ThemeUtils.resolveString(context, R.attr.md_regular_font, XUI.getDefaultFontAssetPath());
             try {
                 typeface(mediumFont, regularFont);
             } catch (Throwable ignored) {
@@ -1312,7 +1311,6 @@ public class MaterialDialog extends DialogBase
             return regularFont;
         }
 
-        @SuppressWarnings("ConstantConditions")
         private void checkSingleton() {
             if (ThemeSingleton.get(false) == null) {
                 return;
@@ -1542,7 +1540,6 @@ public class MaterialDialog extends DialogBase
         public Builder content(@StringRes int contentRes, Object... formatArgs) {
             String str =
                     String.format(this.context.getString(contentRes), formatArgs).replace("\n", "<br/>");
-            //noinspection deprecation
             return content(Html.fromHtml(str));
         }
 
@@ -2202,7 +2199,7 @@ public class MaterialDialog extends DialogBase
          * @param themeStyle
          * @return
          */
-        public Builder customTheme(@NonNull int themeStyle) {
+        public Builder customTheme(int themeStyle) {
             this.customTheme = themeStyle;
             return this;
         }

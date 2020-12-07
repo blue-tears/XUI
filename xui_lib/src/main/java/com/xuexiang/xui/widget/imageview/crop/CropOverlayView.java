@@ -429,7 +429,6 @@ public class CropOverlayView extends View {
         } else {
             mAspectRatioX = aspectRatioX;
             mTargetAspectRatio = ((float) mAspectRatioX) / mAspectRatioY;
-
             resetCropOverlayView();
         }
     }
@@ -446,7 +445,6 @@ public class CropOverlayView extends View {
         } else {
             mAspectRatioY = aspectRatioY;
             mTargetAspectRatio = ((float) mAspectRatioX) / mAspectRatioY;
-
             resetCropOverlayView();
         }
     }
@@ -539,7 +537,6 @@ public class CropOverlayView extends View {
             // then the image height is the determining initial length. Else,
             // vice-versa.
             if (AspectRatioUtil.calculateAspectRatio(bitmapRect) > mTargetAspectRatio) {
-
                 Edge.TOP.setCoordinate(bitmapRect.top);
                 Edge.BOTTOM.setCoordinate(bitmapRect.bottom);
 
@@ -581,8 +578,11 @@ public class CropOverlayView extends View {
                 // Create new TargetAspectRatio if the original one does not fit
                 // the screen
                 if (cropHeight == Edge.MIN_CROP_LENGTH_PX) {
-                    mTargetAspectRatio = (Edge.RIGHT.getCoordinate() - Edge.LEFT
-                            .getCoordinate()) / Edge.MIN_CROP_LENGTH_PX;
+                    float edgeWidth = Edge.RIGHT.getCoordinate() - Edge.LEFT
+                            .getCoordinate();
+                    if (edgeWidth > 0) {
+                        mTargetAspectRatio = edgeWidth / Edge.MIN_CROP_LENGTH_PX;
+                    }
                 }
 
                 final float halfCropHeight = cropHeight / 2f;
@@ -706,23 +706,23 @@ public class CropOverlayView extends View {
 
         if (mCornerBitmap != null) {
             // Top left
-            canvas.drawBitmap(mCornerBitmap, left - mCornerWidth / 2, top
-                    - mCornerHeight / 2, null);
+            canvas.drawBitmap(mCornerBitmap, left - mCornerWidth / 2F, top
+                    - mCornerHeight / 2F, null);
 
             // Top right
 
-            canvas.drawBitmap(mCornerBitmap, right - mCornerWidth / 2, top
-                    - mCornerHeight / 2, null);
+            canvas.drawBitmap(mCornerBitmap, right - mCornerWidth / 2F, top
+                    - mCornerHeight / 2F, null);
 
             // Bottom left
 
-            canvas.drawBitmap(mCornerBitmap, left - mCornerWidth / 2, bottom
-                    - mCornerHeight / 2, null);
+            canvas.drawBitmap(mCornerBitmap, left - mCornerWidth / 2F, bottom
+                    - mCornerHeight / 2F, null);
 
             // Bottom right
 
-            canvas.drawBitmap(mCornerBitmap, right - mCornerWidth / 2, bottom
-                    - mCornerHeight / 2, null);
+            canvas.drawBitmap(mCornerBitmap, right - mCornerWidth / 2F, bottom
+                    - mCornerHeight / 2F, null);
 
         } else {
             // Top left

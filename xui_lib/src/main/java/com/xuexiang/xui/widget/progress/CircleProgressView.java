@@ -157,7 +157,6 @@ public class CircleProgressView extends View {
      */
     private RectF mOval;
 
-    private Paint mTextPaint;
     private Interpolator mInterpolator;
     private CircleProgressUpdateListener mUpdateListener;
 
@@ -177,10 +176,6 @@ public class CircleProgressView extends View {
      * the padding of scale zones
      */
     private int mScaleZonePadding;
-    /**
-     * the shape of scale zone
-     */
-    private RectF mScaleZoneRect;
     /**
      * open draw the scale zone or not
      */
@@ -248,9 +243,6 @@ public class CircleProgressView extends View {
 
         mScaleZonePath = new Path();
 
-        /**
-         * if set the scale zone mode for progress view, should not let the circle be filled
-         */
         drawScaleZones(isGraduated);
     }
 
@@ -276,7 +268,10 @@ public class CircleProgressView extends View {
         /**
          * draw the scale zone shape
          */
-        mScaleZoneRect = new RectF(0, 0, mScaleZoneWidth, mScaleZoneLength);
+        /**
+         * the shape of scale zone
+         */
+        RectF mScaleZoneRect = new RectF(0, 0, mScaleZoneWidth, mScaleZoneLength);
         mScaleZonePath.addRoundRect(mScaleZoneRect, mScaleZoneCornerRadius, mScaleZoneCornerRadius, Path.Direction.CW);
 
 
@@ -345,7 +340,7 @@ public class CircleProgressView extends View {
      */
     private void drawProgressText(Canvas canvas) {
         if (textVisibility) {
-            mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            Paint mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             mTextPaint.setStyle(Paint.Style.FILL);
             mTextPaint.setTextSize(mProgressTextSize);
             mTextPaint.setColor(mProgressTextColor);
